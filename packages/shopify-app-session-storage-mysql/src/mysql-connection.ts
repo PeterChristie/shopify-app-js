@@ -7,16 +7,19 @@ export class MySqlConnection implements RdbmsConnection {
   private dbUrl: URL;
   private connectionPoolLimit: number;
   private pool: mysql.Pool;
+  private sslRejectUnauthorized: boolean;
 
   constructor(
     dbUrl: URL,
     sessionStorageIdentifier: string,
     connectionPoolLimit: number,
+    sslRejectUnauthorized: boolean,
   ) {
     this.dbUrl = dbUrl;
     this.connectionPoolLimit = connectionPoolLimit;
     this.ready = this.init();
     this.sessionStorageIdentifier = sessionStorageIdentifier;
+    this.sslRejectUnauthorized = sslRejectUnauthorized;
   }
 
   async query(query: string, params: any[] = []): Promise<any[]> {
@@ -103,6 +106,9 @@ export class MySqlConnection implements RdbmsConnection {
       password: decodeURIComponent(this.dbUrl.password),
       database: this.getDatabase(),
       port: Number(this.dbUrl.port),
+      ssl: {
+        rejectUnauthorized: this.sslRejectUnauthorized,
+      },
     });
   }
 }

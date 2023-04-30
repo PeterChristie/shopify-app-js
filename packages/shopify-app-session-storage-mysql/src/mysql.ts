@@ -10,11 +10,13 @@ import {MySqlSessionStorageMigrator} from './mysql-migrator';
 
 export interface MySQLSessionStorageOptions extends RdbmsSessionStorageOptions {
   connectionPoolLimit: number;
+  sslRejectUnauthorized: boolean;
 }
 
 const defaultMySQLSessionStorageOptions: MySQLSessionStorageOptions = {
   connectionPoolLimit: 10,
   sessionTableName: 'shopify_sessions',
+  sslRejectUnauthorized: true,
   migratorOptions: {
     migrationDBIdentifier: 'shopify_sessions_migrations',
     migrationNameColumnName: 'migration_name',
@@ -145,6 +147,7 @@ export class MySQLSessionStorage implements SessionStorage {
       dbUrl,
       this.options.sessionTableName,
       this.options.connectionPoolLimit,
+      this.options.sslRejectUnauthorized,
     );
     await this.createTable();
   }
